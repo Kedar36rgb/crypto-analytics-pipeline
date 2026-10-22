@@ -7,7 +7,7 @@ import streamlit as st
 # --- 1. PAGE CONFIG ---
 st.set_page_config(page_title='Crypto Terminal', layout='wide', page_icon="📈")
 
-# --- 2. AGGRESSIVE CUSTOM CSS ---
+# --- 2. AGGRESSIVE CUSTOM CSS (FIXED FOR NEW STREAMLIT VERSION) ---
 custom_css = """
             <style>
             /* Hide default menu, footer */
@@ -15,7 +15,7 @@ custom_css = """
             footer {visibility: hidden;}
             header {visibility: hidden;}
             
-            /* FORCE SIDEBAR TO BE WIDE (450px to fit the larger text) */
+            /* FORCE SIDEBAR TO BE WIDE (450px) */
             section[data-testid="stSidebar"] {
                 width: 450px !important;
                 min-width: 450px !important;
@@ -28,23 +28,24 @@ custom_css = """
             
             /* 1. SIDEBAR SECTION TITLE (Dashboard Controls) */
             section[data-testid="stSidebar"] h3 {
-                font-size: 28px !important;
+                font-size: 32px !important;
                 color: #00FFAA !important; 
-                margin-bottom: 20px !important;
+                font-weight: 800 !important;
+                margin-bottom: 25px !important;
             }
 
-            /* 2. SIDEBAR LABELS (Select Assets, Date range) */
-            section[data-testid="stSidebar"] label p {
+            /* 2. SIDEBAR LABELS (Select Assets, Date range) - NEW TARGET */
+            section[data-testid="stSidebar"] div[data-testid="stWidgetLabel"] p {
                 font-size: 28px !important;
                 font-weight: 700 !important;
                 color: #FAFAFA !important;
-                margin-bottom: 12px !important;
+                margin-bottom: 10px !important;
             }
             
-            /* 3. DROPDOWN MENU ITEMS (Avalanche, Cardano, etc) */
-            div[data-baseweb="popover"] ul li {
+            /* 3. DROPDOWN MENU ITEMS - NEW TARGET */
+            div[data-baseweb="popover"] div[role="listbox"] div[role="option"] {
                 font-size: 28px !important;
-                padding: 16px 20px !important;
+                padding: 15px 20px !important;
             }
             
             /* 4. DATE PICKER INPUT BOX */
@@ -53,17 +54,14 @@ custom_css = """
                 height: 60px !important;
             }
 
-            /* Make the select box wrapper taller to match input */
-            div[data-baseweb="select"] > div {
-                padding: 10px !important;
-            }
-            
             /* 5. THE GREEN ASSET TAGS */
-            span[data-baseweb="tag"] {
-                font-size: 28px !important;
-                height: 55px !important;
-                padding: 0 18px !important;
-                margin: 4px !important;
+            div[data-baseweb="tag"] span {
+                font-size: 24px !important; /* Slightly smaller to fit inside the pill */
+                padding: 6px 12px !important;
+            }
+            div[data-baseweb="tag"] {
+                height: 50px !important;
+                margin: 5px !important;
             }
 
             /* 6. KPI METRICS (Main Dashboard) */
