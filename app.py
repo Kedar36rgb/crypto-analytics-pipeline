@@ -15,53 +15,58 @@ custom_css = """
             footer {visibility: hidden;}
             header {visibility: hidden;}
             
-            /* FORCE SIDEBAR TO BE WIDE (400px) */
+            /* FORCE SIDEBAR TO BE WIDE (450px to fit the larger text) */
             section[data-testid="stSidebar"] {
-                width: 400px !important;
-                min-width: 400px !important;
-                max-width: 400px !important;
+                width: 450px !important;
+                min-width: 450px !important;
+                max-width: 450px !important;
                 background-color: #1A1C24 !important;
             }
             section[data-testid="stSidebar"] > div {
-                width: 400px !important;
+                width: 450px !important;
             }
             
-            /* 1. INCREASE ALL TEXT IN SIDEBAR */
-            section[data-testid="stSidebar"] * {
-                font-size: 18px !important;
+            /* 1. SIDEBAR SECTION TITLE (Dashboard Controls) */
+            section[data-testid="stSidebar"] h3 {
+                font-size: 28px !important;
+                color: #00FFAA !important; 
+                margin-bottom: 20px !important;
             }
 
-            /* 2. TARGET SPECIFIC LABELS (Select Assets & Date Range) */
+            /* 2. SIDEBAR LABELS (Select Assets, Date range) */
             section[data-testid="stSidebar"] label p {
-                font-size: 20px !important;
-                font-weight: bold !important;
+                font-size: 28px !important;
+                font-weight: 700 !important;
                 color: #FAFAFA !important;
-                margin-bottom: 10px !important;
+                margin-bottom: 12px !important;
             }
             
-            /* 3. TARGET THE DROPDOWN MENU ITEMS (Avalanche, Cardano, etc) */
+            /* 3. DROPDOWN MENU ITEMS (Avalanche, Cardano, etc) */
             div[data-baseweb="popover"] ul li {
-                font-size: 18px !important;
-                padding: 12px 16px !important;
+                font-size: 28px !important;
+                padding: 16px 20px !important;
             }
             
-            /* 4. TARGET THE INPUT BOXES (Tags and Date) */
-            div[data-baseweb="select"] > div {
-                padding: 8px !important;
-            }
+            /* 4. DATE PICKER INPUT BOX */
             section[data-testid="stSidebar"] input {
-                font-size: 18px !important;
-                height: 40px !important;
-            }
-            
-            /* 5. MAKE THE GREEN ASSET TAGS LARGER */
-            span[data-baseweb="tag"] {
-                font-size: 16px !important;
-                height: 36px !important;
-                padding: 0 12px !important;
+                font-size: 28px !important;
+                height: 60px !important;
             }
 
-            /* 6. MAKE KPI METRICS LARGER */
+            /* Make the select box wrapper taller to match input */
+            div[data-baseweb="select"] > div {
+                padding: 10px !important;
+            }
+            
+            /* 5. THE GREEN ASSET TAGS */
+            span[data-baseweb="tag"] {
+                font-size: 28px !important;
+                height: 55px !important;
+                padding: 0 18px !important;
+                margin: 4px !important;
+            }
+
+            /* 6. KPI METRICS (Main Dashboard) */
             [data-testid="stMetricLabel"] p {
                 font-size: 22px !important;
                 color: #A0A0A0 !important;
