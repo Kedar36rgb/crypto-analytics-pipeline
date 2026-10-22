@@ -20,38 +20,48 @@ custom_css = """
                 width: 400px !important;
                 min-width: 400px !important;
                 max-width: 400px !important;
-                background-color: #1A1C24 !important; /* Slightly lighter dark color */
+                background-color: #1A1C24 !important;
             }
             section[data-testid="stSidebar"] > div {
                 width: 400px !important;
             }
             
-            /* MAKE SIDEBAR TEXT LARGER */
-            section[data-testid="stSidebar"] label {
+            /* 1. INCREASE ALL TEXT IN SIDEBAR */
+            section[data-testid="stSidebar"] * {
                 font-size: 18px !important;
-                font-weight: 600 !important;
-                color: #E0E0E0 !important;
-                margin-bottom: 8px !important;
             }
-            section[data-testid="stSidebar"] h3 {
-                font-size: 24px !important;
-                color: #00FFAA !important; /* Make the header green */
+
+            /* 2. TARGET SPECIFIC LABELS (Select Assets & Date Range) */
+            section[data-testid="stSidebar"] label p {
+                font-size: 20px !important;
+                font-weight: bold !important;
+                color: #FAFAFA !important;
+                margin-bottom: 10px !important;
             }
             
-            /* MAKE THE GREEN ASSET TAGS LARGER */
+            /* 3. TARGET THE DROPDOWN MENU ITEMS (Avalanche, Cardano, etc) */
+            div[data-baseweb="popover"] ul li {
+                font-size: 18px !important;
+                padding: 12px 16px !important;
+            }
+            
+            /* 4. TARGET THE INPUT BOXES (Tags and Date) */
+            div[data-baseweb="select"] > div {
+                padding: 8px !important;
+            }
+            section[data-testid="stSidebar"] input {
+                font-size: 18px !important;
+                height: 40px !important;
+            }
+            
+            /* 5. MAKE THE GREEN ASSET TAGS LARGER */
             span[data-baseweb="tag"] {
                 font-size: 16px !important;
                 height: 36px !important;
                 padding: 0 12px !important;
             }
-            
-            /* MAKE DATE INPUT BOX LARGER */
-            div[data-testid="stDateInput"] input {
-                font-size: 18px !important;
-                height: 45px !important;
-            }
 
-            /* MAKE KPI METRICS LARGER */
+            /* 6. MAKE KPI METRICS LARGER */
             [data-testid="stMetricLabel"] p {
                 font-size: 22px !important;
                 color: #A0A0A0 !important;
