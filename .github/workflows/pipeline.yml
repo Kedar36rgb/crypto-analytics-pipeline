@@ -1,0 +1,27 @@
+name: Crypto Live Pipeline
+
+on:
+  schedule:
+    - cron: '5 * * * *' # Runs at minute 5 of every hour
+  workflow_dispatch: # Allows you to run it manually for testing
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Extraction Script
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python src/fetch_data.py
