@@ -7,72 +7,64 @@ import streamlit as st
 # --- 1. PAGE CONFIG ---
 st.set_page_config(page_title='Crypto Terminal', layout='wide', page_icon="📈")
 
-# --- 2. AGGRESSIVE CUSTOM CSS (FIXED FOR NEW STREAMLIT VERSION) ---
+# --- 2. BRUTE FORCE CSS ---
 custom_css = """
             <style>
-            /* Hide default menu, footer */
+            /* Hide default menu */
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
             
-            /* FORCE SIDEBAR TO BE WIDE (450px) */
+            /* 1. FORCE SIDEBAR TO BE VERY WIDE */
             section[data-testid="stSidebar"] {
                 width: 450px !important;
                 min-width: 450px !important;
                 max-width: 450px !important;
-                background-color: #1A1C24 !important;
-            }
-            section[data-testid="stSidebar"] > div {
-                width: 450px !important;
-            }
-            
-            /* 1. SIDEBAR SECTION TITLE (Dashboard Controls) */
-            section[data-testid="stSidebar"] h3 {
-                font-size: 32px !important;
-                color: #00FFAA !important; 
-                font-weight: 800 !important;
-                margin-bottom: 25px !important;
             }
 
-            /* 2. SIDEBAR LABELS (Select Assets, Date range) - NEW TARGET */
-            section[data-testid="stSidebar"] div[data-testid="stWidgetLabel"] p {
+            /* 2. SIDEBAR TITLE (Dashboard Controls) */
+            section[data-testid="stSidebar"] h3 {
+                font-size: 32px !important;
+                font-weight: 800 !important;
+                color: #00FFAA !important;
+                margin-bottom: 20px !important;
+            }
+
+            /* 3. SIDEBAR LABELS (Select Assets, Date range) */
+            section[data-testid="stSidebar"] label p,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
                 font-size: 28px !important;
                 font-weight: 700 !important;
                 color: #FAFAFA !important;
-                margin-bottom: 10px !important;
             }
-            
-            /* 3. DROPDOWN MENU ITEMS - NEW TARGET */
-            div[data-baseweb="popover"] div[role="listbox"] div[role="option"] {
+
+            /* 4. DROPDOWN MENU ITEMS */
+            div[data-baseweb="popover"] div[role="option"],
+            div[data-baseweb="popover"] ul li {
                 font-size: 28px !important;
-                padding: 15px 20px !important;
+                padding: 15px !important;
             }
-            
-            /* 4. DATE PICKER INPUT BOX */
-            section[data-testid="stSidebar"] input {
+
+            /* 5. DATE PICKER & MULTISELECT INPUT BOX */
+            section[data-testid="stSidebar"] input,
+            section[data-testid="stSidebar"] div[data-baseweb="input"] {
                 font-size: 28px !important;
                 height: 60px !important;
             }
 
-            /* 5. THE GREEN ASSET TAGS */
-            div[data-baseweb="tag"] span {
-                font-size: 24px !important; /* Slightly smaller to fit inside the pill */
-                padding: 6px 12px !important;
-            }
-            div[data-baseweb="tag"] {
+            /* 6. GREEN TAGS (Bitcoin, Ethereum) */
+            section[data-testid="stSidebar"] span[data-baseweb="tag"] {
                 height: 50px !important;
-                margin: 5px !important;
+                padding: 5px 15px !important;
+            }
+            section[data-testid="stSidebar"] span[data-baseweb="tag"] span {
+                font-size: 24px !important; /* 24px so it fits inside the box */
+                font-weight: bold !important;
             }
 
-            /* 6. KPI METRICS (Main Dashboard) */
-            [data-testid="stMetricLabel"] p {
-                font-size: 22px !important;
-                color: #A0A0A0 !important;
-            }
-            [data-testid="stMetricValue"] {
-                font-size: 48px !important;
-                font-weight: 700 !important;
-            }
+            /* 7. KPI METRICS */
+            [data-testid="stMetricLabel"] p { font-size: 22px !important; color: #A0A0A0 !important; }
+            [data-testid="stMetricValue"] { font-size: 48px !important; font-weight: 700 !important; }
             </style>
             """
 st.markdown(custom_css, unsafe_allow_html=True)
