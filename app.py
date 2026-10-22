@@ -4,10 +4,10 @@ import plotly.express as px
 import psycopg2
 import streamlit as st
 
-# --- 1. PAGE CONFIG & CUSTOM CSS ---
+# --- 1. PAGE CONFIG ---
 st.set_page_config(page_title='Crypto Terminal', layout='wide', page_icon="📈")
 
-# Aggressive CSS to override Streamlit defaults
+# --- 2. AGGRESSIVE CUSTOM CSS ---
 custom_css = """
             <style>
             /* Hide default menu, footer */
@@ -15,45 +15,64 @@ custom_css = """
             footer {visibility: hidden;}
             header {visibility: hidden;}
             
-            /* 1. FORCE SIDEBAR TO BE WIDE */
+            /* FORCE SIDEBAR TO BE WIDE (400px) */
             section[data-testid="stSidebar"] {
                 width: 400px !important;
                 min-width: 400px !important;
+                max-width: 400px !important;
+                background-color: #1A1C24 !important; /* Slightly lighter dark color */
+            }
+            section[data-testid="stSidebar"] > div {
+                width: 400px !important;
             }
             
-            /* 2. MAKE SIDEBAR TEXT LARGER */
-            section[data-testid="stSidebar"] * {
+            /* MAKE SIDEBAR TEXT LARGER */
+            section[data-testid="stSidebar"] label {
                 font-size: 18px !important;
+                font-weight: 600 !important;
+                color: #E0E0E0 !important;
+                margin-bottom: 8px !important;
+            }
+            section[data-testid="stSidebar"] h3 {
+                font-size: 24px !important;
+                color: #00FFAA !important; /* Make the header green */
+            }
+            
+            /* MAKE THE GREEN ASSET TAGS LARGER */
+            span[data-baseweb="tag"] {
+                font-size: 16px !important;
+                height: 36px !important;
+                padding: 0 12px !important;
+            }
+            
+            /* MAKE DATE INPUT BOX LARGER */
+            div[data-testid="stDateInput"] input {
+                font-size: 18px !important;
+                height: 45px !important;
             }
 
-            /* 3. MAKE KPI METRICS LARGER */
+            /* MAKE KPI METRICS LARGER */
             [data-testid="stMetricLabel"] p {
-                font-size: 20px !important;
+                font-size: 22px !important;
                 color: #A0A0A0 !important;
             }
             [data-testid="stMetricValue"] {
-                font-size: 42px !important;
+                font-size: 48px !important;
                 font-weight: 700 !important;
-            }
-            
-            /* 4. MAKE TABS LARGER */
-            button[data-baseweb="tab"] {
-                font-size: 20px !important;
-                padding: 12px 24px !important;
             }
             </style>
             """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-# --- 2. CUSTOM HEADER ---
+# --- 3. CUSTOM HEADER ---
 st.markdown("""
     <div style="background: linear-gradient(90deg, #00FFAA 0%, #0077FF 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
         <h1 style="color: white; margin: 0; font-family: 'Helvetica Neue', sans-serif; font-size: 44px; font-weight: 800;">📈 Crypto Market Terminal</h1>
-        <p style="color: #ffffff; margin-top: 10px; font-size: 20px; font-weight: 500; opacity: 0.9;">Automated hourly pipeline | Live SQL Analytics | Powered by Streamlit</p>
+        <p style="color: white; margin-top: 10px; font-size: 20px; font-weight: 600; opacity: 1.0;">Automated hourly pipeline | Live SQL Analytics | Powered by Streamlit</p>
     </div>
 """, unsafe_allow_html=True)
 
-# --- 3. DATA LOADING ---
+# --- 4. DATA LOADING ---
 @st.cache_data(ttl=3600)
 def load(query):
     uri = st.secrets['DATABASE_URL'] if 'DATABASE_URL' in st.secrets else os.getenv('DATABASE_URL')
@@ -72,7 +91,7 @@ if metrics.empty:
     st.warning('No data yet. Run the pipeline first.')
     st.stop()
 
-# --- 4. SIDEBAR FILTERS ---
+# --- 5. SIDEBAR FILTERS ---
 st.sidebar.markdown("### 🎛️ Dashboard Controls")
 coins = sorted(metrics['coin_name'].unique())
 selected = st.sidebar.multiselect('Select Assets', coins, default=['Bitcoin', 'Ethereum', 'Solana'])
@@ -86,7 +105,7 @@ if len(date_range) != 2:
 m = metrics[metrics['coin_name'].isin(selected) & metrics['day'].between(*date_range)]
 d = dd[dd['coin_name'].isin(selected) & dd['day'].between(*date_range)]
 
-# --- 5. KPI METRICS (TOP ROW) ---
+# --- 6. KPI METRICS ---
 st.markdown("<h2 style='color: white; font-size: 32px; margin-bottom: 20px;'>Market Snapshot</h2>", unsafe_allow_html=True)
 latest = m.sort_values('day').groupby('coin_name').tail(1)
 cols = st.columns(max(len(latest), 1))
@@ -101,7 +120,7 @@ for col, (_, row) in zip(cols, latest.iterrows()):
 
 st.markdown("<hr style='margin: 20px 0; border-color: #333;'>", unsafe_allow_html=True)
 
-# --- 6. CHARTS ---
+# --- 7. CHARTS ---
 tab1, tab2, tab3, tab4 = st.tabs(['📈 Market Trends', '⚠️ Risk Analysis', '🔗 Correlations', '🔊 Volume Alpha'])
 
 def style_chart(fig, title, is_log=False):
@@ -114,21 +133,9 @@ def style_chart(fig, title, is_log=False):
         margin=dict(l=20, r=20, t=60, b=20),
         legend=dict(font=dict(size=16, color='white'), orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
     )
-    
-    fig.update_xaxes(
-        showgrid=False, 
-        tickfont=dict(size=16, color='#E0E0E0'),
-        title_font=dict(size=18, color='white')
-    )
-    
+    fig.update_xaxes(showgrid=False, tickfont=dict(size=16, color='#E0E0E0'), title_font=dict(size=18, color='white'))
     yaxis_format = "$,.2s" if is_log else "$,.2f"
-    fig.update_yaxes(
-        showgrid=True, 
-        gridcolor='rgba(255,255,255,0.1)',
-        tickfont=dict(size=16, color='#E0E0E0'),
-        title_font=dict(size=18, color='white'),
-        tickformat=yaxis_format
-    )
+    fig.update_yaxes(showgrid=True, gridcolor='rgba(255,255,255,0.1)', tickfont=dict(size=16, color='#E0E0E0'), title_font=dict(size=18, color='white'), tickformat=yaxis_format)
     return fig
 
 with tab1:
