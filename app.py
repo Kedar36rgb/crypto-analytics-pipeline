@@ -7,77 +7,97 @@ import streamlit as st
 # --- 1. PAGE CONFIG ---
 st.set_page_config(page_title='Crypto Terminal', layout='wide', page_icon="📈")
 
-# --- 2. BRUTE FORCE CSS ---
-custom_css = """
-            <style>
-            /* Hide default menu */
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            
-            /* 1. FORCE SIDEBAR TO BE VERY WIDE */
-            section[data-testid="stSidebar"] {
-                width: 450px !important;
-                min-width: 450px !important;
-                max-width: 450px !important;
-            }
+# --- 2. SESSION STATE FOR SIDEBAR TOGGLE ---
+if 'show_sidebar' not in st.session_state:
+    st.session_state.show_sidebar = True
 
-            /* 2. SIDEBAR TITLE (Dashboard Controls) */
-            section[data-testid="stSidebar"] h3 {
+# --- 3. CUSTOM CSS ---
+# We removed header {visibility: hidden} so we don't break the default toggle.
+# We add dynamic CSS based on the session state to show/hide the sidebar.
+sidebar_css = """
+    <style>
+    section[data-testid="stSidebar"] { display: block !important; width: 450px !important; min-width: 450px !important; }
+    </style>
+""" if st.session_state.show_sidebar else """
+    <style>
+    section[data-testid="stSidebar"] { display: none !important; }
+    </style>
+"""
+
+custom_css = f"""
+            <style>
+            /* Hide default menu, footer, and make header transparent */
+            #MainMenu {{visibility: hidden;}}
+            footer {{visibility: hidden;}}
+            header {{background: transparent !important;}}
+            
+            /* SIDEBAR TITLE */
+            section[data-testid="stSidebar"] h3 {{
                 font-size: 32px !important;
                 font-weight: 800 !important;
                 color: #00FFAA !important;
                 margin-bottom: 20px !important;
-            }
+            }}
 
-            /* 3. SIDEBAR LABELS (Select Assets, Date range) */
+            /* SIDEBAR LABELS */
             section[data-testid="stSidebar"] label p,
-            section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {{
                 font-size: 28px !important;
                 font-weight: 700 !important;
                 color: #FAFAFA !important;
-            }
+            }}
 
-            /* 4. DROPDOWN MENU ITEMS */
+            /* DROPDOWN MENU ITEMS */
             div[data-baseweb="popover"] div[role="option"],
-            div[data-baseweb="popover"] ul li {
+            div[data-baseweb="popover"] ul li {{
                 font-size: 28px !important;
                 padding: 15px !important;
-            }
+            }}
 
-            /* 5. DATE PICKER & MULTISELECT INPUT BOX */
+            /* DATE PICKER & INPUT BOX */
             section[data-testid="stSidebar"] input,
-            section[data-testid="stSidebar"] div[data-baseweb="input"] {
+            section[data-testid="stSidebar"] div[data-baseweb="input"] {{
                 font-size: 28px !important;
                 height: 60px !important;
-            }
+            }}
 
-            /* 6. GREEN TAGS (Bitcoin, Ethereum) */
-            section[data-testid="stSidebar"] span[data-baseweb="tag"] {
+            /* GREEN TAGS */
+            section[data-testid="stSidebar"] span[data-baseweb="tag"] {{
                 height: 50px !important;
                 padding: 5px 15px !important;
-            }
-            section[data-testid="stSidebar"] span[data-baseweb="tag"] span {
-                font-size: 24px !important; /* 24px so it fits inside the box */
+            }}
+            section[data-testid="stSidebar"] span[data-baseweb="tag"] span {{
+                font-size: 24px !important; 
                 font-weight: bold !important;
-            }
+            }}
 
-            /* 7. KPI METRICS */
-            [data-testid="stMetricLabel"] p { font-size: 22px !important; color: #A0A0A0 !important; }
-            [data-testid="stMetricValue"] { font-size: 48px !important; font-weight: 700 !important; }
+            /* KPI METRICS */
+            [data-testid="stMetricLabel"] p {{ font-size: 22px !important; color: #A0A0A0 !important; }}
+            [data-testid="stMetricValue"] {{ font-size: 48px !important; font-weight: 700 !important; }}
             </style>
+            {sidebar_css}
             """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-# --- 3. CUSTOM HEADER ---
-st.markdown("""
-    <div style="background: linear-gradient(90deg, #00FFAA 0%, #0077FF 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-        <h1 style="color: white; margin: 0; font-family: 'Helvetica Neue', sans-serif; font-size: 44px; font-weight: 800;">📈 Crypto Market Terminal</h1>
-        <p style="color: white; margin-top: 10px; font-size: 20px; font-weight: 600; opacity: 1.0;">Automated hourly pipeline | Live SQL Analytics | Powered by Streamlit</p>
-    </div>
-""", unsafe_allow_html=True)
+# --- 4. HEADER & TOGGLE BUTTON ---
+col1, col2 = st.columns([4, 1])
+with col1:
+    st.markdown("""
+        <div style="background: linear-gradient(90deg, #00FFAA 0%, #0077FF 100%); padding: 30px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <h1 style="color: white; margin: 0; font-family: 'Helvetica Neue', sans-serif; font-size: 44px; font-weight: 800;">📈 Crypto Market Terminal</h1>
+            <p style="color: white; margin-top: 10px; font-size: 20px; font-weight: 600; opacity: 1.0;">Automated hourly pipeline | Live SQL Analytics | Powered by Streamlit</p>
+        </div>
+    """, unsafe_allow_html=True)
 
-# --- 4. DATA LOADING ---
+with col2:
+    st.write("") # Spacing
+    st.write("") 
+    # The toggle button
+    if st.button("⚙️ Toggle Controls", use_container_width=True):
+        st.session_state.show_sidebar = not st.session_state.show_sidebar
+        st.rerun()
+
+# --- 5. DATA LOADING ---
 @st.cache_data(ttl=3600)
 def load(query):
     uri = st.secrets['DATABASE_URL'] if 'DATABASE_URL' in st.secrets else os.getenv('DATABASE_URL')
@@ -96,7 +116,7 @@ if metrics.empty:
     st.warning('No data yet. Run the pipeline first.')
     st.stop()
 
-# --- 5. SIDEBAR FILTERS ---
+# --- 6. SIDEBAR FILTERS ---
 st.sidebar.markdown("### 🎛️ Dashboard Controls")
 coins = sorted(metrics['coin_name'].unique())
 selected = st.sidebar.multiselect('Select Assets', coins, default=['Bitcoin', 'Ethereum', 'Solana'])
@@ -110,7 +130,7 @@ if len(date_range) != 2:
 m = metrics[metrics['coin_name'].isin(selected) & metrics['day'].between(*date_range)]
 d = dd[dd['coin_name'].isin(selected) & dd['day'].between(*date_range)]
 
-# --- 6. KPI METRICS ---
+# --- 7. KPI METRICS ---
 st.markdown("<h2 style='color: white; font-size: 32px; margin-bottom: 20px;'>Market Snapshot</h2>", unsafe_allow_html=True)
 latest = m.sort_values('day').groupby('coin_name').tail(1)
 cols = st.columns(max(len(latest), 1))
@@ -125,7 +145,7 @@ for col, (_, row) in zip(cols, latest.iterrows()):
 
 st.markdown("<hr style='margin: 20px 0; border-color: #333;'>", unsafe_allow_html=True)
 
-# --- 7. CHARTS ---
+# --- 8. CHARTS ---
 tab1, tab2, tab3, tab4 = st.tabs(['📈 Market Trends', '⚠️ Risk Analysis', '🔗 Correlations', '🔊 Volume Alpha'])
 
 def style_chart(fig, title, is_log=False):
